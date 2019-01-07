@@ -1,4 +1,4 @@
-# External API plugin for Craft CMS 3.x
+# Craft REST API plugin for Craft CMS 3.x
 
 Add external API 
 
@@ -20,21 +20,21 @@ To install the plugin, follow these instructions.
 
         composer require 3dgroup/external-api
 
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for External API.
+3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Craft REST API.
 
-## External API Overview
-
--Insert text here-
-
-## Configuring External API
+## Craft REST API Overview
 
 -Insert text here-
 
-## Using External API
+## Configuring Craft REST API
 
 -Insert text here-
 
-## External API Roadmap
+## Using Craft REST API
+
+-Insert text here-
+
+## Craft REST API Roadmap
 
 Some things to do, and ideas for potential features:
 
