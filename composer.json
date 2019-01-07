@@ -1,0 +1,40 @@
+{
+    "name": "threedgroup/craft-rest",
+    "description": "Add REST features to craft",
+    "type": "craft-plugin",
+    "version": "1",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "REST"
+    ],
+    "support": {
+        "docs": "https://github.com/3dgroup/craft-rest/blob/master/README.md",
+        "issues": "https://github.com/3dgroup/craft-rest/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "3D Group",
+            "homepage": "https://github.com/3dgroup"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1"
+    },
+    "autoload": {
+        "psr-4": {
+          "threedgroup\\craftrest\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Craft Rest API",
+        "handle": "craft-rest",
+        "hasCpSettings": false,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/3dgroup/craft-rest/master/CHANGELOG.md",
+        "class": "threedgroup\\craftrest\\Plugin"
+    }
+}
