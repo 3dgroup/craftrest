@@ -1,5 +1,5 @@
 {
-    "name": "threedgroup/craft-rest",
+    "name": "threedgroup/craft-rest-api",
     "description": "Add REST features to craft",
     "type": "craft-plugin",
     "version": "1",
