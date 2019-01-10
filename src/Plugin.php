@@ -129,7 +129,7 @@ class Plugin extends BasePlugin
             function(RegisterUserPermissionsEvent $event) {
                 if($this->settings->customElements) {
                     foreach ($this->settings->customElements AS $key => $elementType) {
-                        $elements['api-' . $key] = [
+                        $customElements['api-' . $key] = [
                             'label' => ucfirst($key),
                             'nested' => [
                                 'api-' . $elementType['class'] . '-index' => ['label' => 'List'],
@@ -155,13 +155,13 @@ class Plugin extends BasePlugin
                     ];
 
                 }
-
-                $event->permissions['REST API'] = [
-                    'CustomElements' => [
+                if(is_array($customElements)) {
+                    $elements['CustomElements'] = [
                         'label' => 'Custom Elements',
-                        'nested' => $elements
-                    ]
-                ];
+                        'nested' => $customElements
+                    ];
+                }
+                $event->permissions['REST API'] = $elements;
 
             }
         );
