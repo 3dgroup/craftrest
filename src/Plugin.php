@@ -155,7 +155,7 @@ class Plugin extends BasePlugin
                     ];
 
                 }
-                if(is_array($customElements)) {
+                if(isset($customElements)) {
                     $elements['CustomElements'] = [
                         'label' => 'Custom Elements',
                         'nested' => $customElements
