@@ -56,7 +56,7 @@ if(!defined('REST')) {
 }
 
 return \craft\helpers\ArrayHelper::merge($config,
-    require(CRAFT_VENDOR_PATH . '/threedgroup/craftrestapi/src/config/rest.php'));
+    require(CRAFT_VENDOR_PATH . '/threedgroup/craft-rest-api/src/config/rest.php'));
 ```
 
 
