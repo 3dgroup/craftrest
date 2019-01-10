@@ -12,6 +12,7 @@ namespace threedgroup\craftrest;
 
 use craft\commerce\elements\Variant;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\helpers\UrlHelper;
 use craft\services\UserPermissions;
 
 use threedgroup\craftrest\components\UrlManagerREST;
@@ -24,9 +25,11 @@ use modules\craftrestmodule\assetbundles\craftrestmodule\CraftrestModuleAsset;
 use Craft;
 use craft\events\RegisterUrlRulesEvent;
 
+use threedgroup\craftrest\models\Token;
 use threedgroup\geekeyaftercare\elements\Question;
 use threedgroup\geekeyaftercare\GeekeyAftercare;
 use yii\base\Event;
+use craft\web\UrlManager;
 use craft\base\Plugin AS BasePlugin;
 
 /**
@@ -124,42 +127,78 @@ class Plugin extends BasePlugin
             UserPermissions::class,
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function(RegisterUserPermissionsEvent $event) {
-                if($this->settings->customElements){
-                    foreach($this->settings->customElements AS $key => $elementType){
-                        $elements['api-'.$key] = [
+                if($this->settings->customElements) {
+                    foreach ($this->settings->customElements AS $key => $elementType) {
+                        $elements['api-' . $key] = [
                             'label' => ucfirst($key),
                             'nested' => [
-                                'api-'.$elementType['class'].'-index' => ['label' => 'List'],
-                                'api-'.$elementType['class'].'-view' => ['label' => 'View'],
-                                'api-'.$elementType['class'].'-create' => ['label' => 'Create'],
-                                'api-'.$elementType['class'].'-update' => ['label' => 'Update'],
+                                'api-' . $elementType['class'] . '-index' => ['label' => 'List'],
+                                'api-' . $elementType['class'] . '-view' => ['label' => 'View'],
+                                'api-' . $elementType['class'] . '-create' => ['label' => 'Create'],
+                                'api-' . $elementType['class'] . '-update' => ['label' => 'Update'],
                             ]
                         ];
                     }
 
-                    $sections = Craft::$app->sections->getAllSections();
-
-                    foreach($sections AS $section){
-                        $elements['api-sections-'.$section['handle']] = [
-                            'label' => 'Section: '.ucwords($section['name']),
-                            'nested' => [
-                                'api-section-'.$section['handle'].'-index' => ['label' => 'List'],
-                                'api-section-'.$section['handle'].'-view' => ['label' => 'View'],
-                                'api-section-'.$section['handle'].'-create' => ['label' => 'Create'],
-                                'api-section-'.$section['handle'].'-update' => ['label' => 'Update'],
-                            ]
-                        ];
-                    }
-                    $event->permissions['REST API'] = [
-                        'CustomElements' => [
-                            'label' => 'Custom Elements',
-                            'nested' => $elements
-                            ]
-                    ];
                 }
-               // 'api-'.$model.'-'.$action
+                $sections = Craft::$app->sections->getAllSections();
+
+                foreach($sections AS $section){
+                    $elements['api-sections-'.$section['handle']] = [
+                        'label' => 'Section: '.ucwords($section['name']),
+                        'nested' => [
+                            'api-section-'.$section['handle'].'-index' => ['label' => 'List'],
+                            'api-section-'.$section['handle'].'-view' => ['label' => 'View'],
+                            'api-section-'.$section['handle'].'-create' => ['label' => 'Create'],
+                            'api-section-'.$section['handle'].'-update' => ['label' => 'Update'],
+                        ]
+                    ];
+
+                }
+
+                $event->permissions['REST API'] = [
+                    'CustomElements' => [
+                        'label' => 'Custom Elements',
+                        'nested' => $elements
+                    ]
+                ];
+
             }
         );
+
+        // Register cp routes
+        Event::on(
+            UrlManager::className(),
+            UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            function (RegisterUrlRulesEvent $event) {
+                $event->rules['craft-rest/token/create'] = 'craft-rest/token/create';
+                $event->rules['craft-rest/token/delete'] = 'craft-rest/token/delete';
+            }
+        );
+
+        Craft::$app->view->hook('cp.users.edit.details', function(array &$context) {
+
+            $tokens = Token::getByUserId($context['user']['id']);
+
+            $html = '<div class="meta" style="word-wrap: break-word;"><h3>API Tokens';
+            if(Craft::$app->user->checkPermission('addToken')) {
+                $html .= '<a href="' . UrlHelper::cpUrl('craft-rest/token/create', ['userId' => $context['user']['id']]) . '" class="btn icon add small">Add</a>';
+            }
+            $html .= '</h3>';
+            if($tokens) {
+                foreach ($tokens AS $token) {
+                    $html .= '<p>'. $token->name.'<i>'.$token->token.'</i><br>';
+                    if(Craft::$app->user->checkPermission('deleteToken')) {
+                        $html .= '<a href="'.UrlHelper::cpUrl('craft-rest/token/delete',['id'=>$token->id]).'" class="btn submit small">Remove</a></p><hr>';
+                    }
+                }
+            } else {
+                $html .= '</i>No API tokens created for this user</i>';
+            }
+            $html .= '';
+            $html .= '</div>';
+            return $html;
+        });
 
 
         /*

@@ -11,8 +11,8 @@
         "REST"
     ],
     "support": {
-        "docs": "https://github.com/3dgroup/craft-rest/blob/master/README.md",
-        "issues": "https://github.com/3dgroup/craft-rest/issues"
+        "docs": "https://github.com/3dgroup/craft-rest-api/blob/master/README.md",
+        "issues": "https://github.com/3dgroup/craft-rest-api/issues"
     },
     "license": "MIT",
     "authors": [

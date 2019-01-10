@@ -38,6 +38,7 @@ class EntryController extends Controller
      * @access protected
      */
     protected $allowAnonymous = ['index', 'do-something', '*'];
+    private $_sectionhandleId;
 
     public $modelClass = Entry::class;
     public $model;
@@ -47,6 +48,7 @@ class EntryController extends Controller
     public function init()
     {
         $this->accessName = 'section-' .  Craft::$app->request->getSegment(3);
+        $this->_sectionhandleId = Craft::$app->sections->getSectionByHandle(Craft::$app->request->getSegment(3));
 
         /* Create Dynamic Class to Play with the Fields */
         class_alias($this->modelClass, 'threedgroup\craftrest\controllers\parentClass');
@@ -55,16 +57,17 @@ class EntryController extends Controller
             private $_fields;
             private $_extraFields;
             private $_removeFields;
+            private $_sectionhandleId;
 
             public function init(){
                 $plugin = Plugin::getInstance();
-                $handleId = Craft::$app->request->getSegment(3);
+                $this->_sectionhandleId = Craft::$app->request->getSegment(3);
 
-                $config = isset($plugin->settings->sections[$handleId]) ? $plugin->settings->sections[$handleId] : [];
+                $config = isset($plugin->settings->sections[$this->_sectionhandleId]) ? $plugin->settings->sections[$this->_sectionhandleId] : [];
 
                 $this->_fields = isset($config['fields']) ? $config['fields'] : [];
-                $this->_extraFields = isset($config['extraFields']) ? $config['extraFields'] : [];
-                $this->_removeFields = isset($config['removeFields']) ? $config['removeFields'] : [];
+                $this->_extraFields = isset($config['extraFields']) ? $config['extraFields'] : null;
+                $this->_removeFields = isset($config['removeFields']) ? $config['removeFields'] : null;
 
             }
             public function extraFields(){
@@ -72,11 +75,32 @@ class EntryController extends Controller
             }
             public function fields(){
                 /* Return defined fields */
-                if(isset($this->_fields)){
+                if($this->_fields){
                     return $this->_fields;
                 }
 
-                $fields = parent::fields();
+                //$fields = parent::fields();
+
+
+                //var_dump(array_keys($fields));
+
+                $fields = [
+                    'id',
+                    'tempId',
+                    'title',
+                    'postDate',
+                    'expiryDate',
+                    'dateCreated',
+                    'dateUpdated',
+                    'enabled',
+                    'sectionId',
+                    'typeId',
+                    'authorId',
+                    'newParentId',
+                    'revisionCreatorId',
+                    'revisionNotes'
+                ];
+
 
                 if($this->_removeFields){
                     // remove fields that contain sensitive information
@@ -84,6 +108,7 @@ class EntryController extends Controller
                         unset($fields[$key]);
                     }
                 }
+
                 /* Return Standard Fields Removing Unset Fields */
                 return $fields;
             }
@@ -105,7 +130,7 @@ class EntryController extends Controller
 
         $actions['index']['prepareDataProvider'] = function() {
             /** @var $query \craft\elements\Entry */
-            $query = $this->model::find();
+            $query = $this->model::find()->andWhere(['sectionId'=>$this->_sectionhandleId->id]);
 
             return new \yii\data\ActiveDataProvider([
                 'query' => $query,
