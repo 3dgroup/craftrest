@@ -41,7 +41,6 @@ return [
                     ]
                 ]);
         },
-
         'errorHandler' => [
             'class' => yii\web\ErrorHandler::class,
         ]

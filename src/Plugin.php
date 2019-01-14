@@ -13,6 +13,7 @@ namespace threedgroup\craftrest;
 use craft\commerce\elements\Variant;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\helpers\UrlHelper;
+use craft\services\Config;
 use craft\services\UserPermissions;
 
 use threedgroup\craftrest\components\UrlManagerREST;
@@ -108,6 +109,9 @@ class Plugin extends BasePlugin
 
 
         if(defined('REST')) {
+            /* Without this override Craft may block the request because there is no user agent */
+            Craft::$app->config->general->requireUserAgentAndIpForSession = false;
+
             Event::on(
                 UrlManagerREST::class,
                 UrlManagerREST::EVENT_REGISTER_REST_URL_RULES,

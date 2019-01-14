@@ -1,17 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dean.sanderson
- * Date: 2018-12-13
- * Time: 15:06
- */
 
 namespace threedgroup\craftrest\controllers;
 
-use yii\filters\auth\CompositeAuth;
-use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
-use yii\filters\auth\QueryParamAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\RateLimiter;
 use yii\filters\VerbFilter;
@@ -56,14 +47,11 @@ class Controller extends ActiveController
                 ],
             ],
             'authenticator' => [
-                'class' => CompositeAuth::class,
-                'authMethods' => [
-                    HttpBearerAuth::className()
-                ]
+                'class' => HttpBearerAuth::class
             ],
             'rateLimiter' => [
                 'class' => RateLimiter::class,
-            ]
+            ],
         ];
     }
 

@@ -20,8 +20,7 @@ class restUserIdentity extends craft\elements\User
         $token = Token::getByToken($token);
 
         if($token) {
-            $user = Craft::$app->getUsers()->getUserById($token->userId);
-            return $user;
+            return static::findIdentity($token->userId);
         } else {
             return null;
         }

@@ -10,16 +10,13 @@
 
 namespace threedgroup\craftrest\controllers;
 
-use craft\base\Element;
-use craft\base\Field;
 use craft\elements\Entry;
-use craft\web\User;
 
 use Craft;
 use threedgroup\craftrest\Plugin;
 use threedgroup\geekeyaftercare\elements\Question;
 use threedgroup\geekeyaftercare\GeekeyAftercare;
-use yii\data\ActiveDataProvider;
+
 
 /**
  * @author    3D Group
@@ -137,11 +134,9 @@ class EntryController extends Controller
             ]);
         };
 
-
         return $actions;
 
     }
-
 
     public function actionView($id)
     {
